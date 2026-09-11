@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { CrossfadeIcon } from "@/components/CrossfadeIcon";
-import { setThemeName, spacing, touch, type, type ThemeTransition } from "@/theme";
+import { screenPadding, setThemeName, spacing, touch, type, type ThemeTransition } from "@/theme";
 
 function SunIcon({ color }: { color: string }) {
   return (
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: screenPadding,
     borderBottomWidth: 1,
   },
   title: {

@@ -97,9 +97,14 @@ export const radius = {
   none: 0,
 } as const;
 
+// DESIGN.md § Spacing — "Screen horizontal padding is 20", called out
+// separately from the 4·8·12·16·24·32·48 scale above.
+export const screenPadding = 20;
+
 // DESIGN.md § Touch
 export const touch = {
   minHeight: 56,
+  keyMinHeight: 64,
 } as const;
 
 // DESIGN.md § Motion

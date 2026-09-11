@@ -12,7 +12,7 @@ import {
   VoltageDividerIcon,
   type ToolIconProps,
 } from "@/components/icons";
-import { radius, spacing, type, type ThemeTransition, type ToolKey } from "@/theme";
+import { radius, screenPadding, spacing, type, type ThemeTransition, type ToolKey } from "@/theme";
 
 const ICONS: Record<ToolKey, (props: ToolIconProps) => React.JSX.Element> = {
   resistorColourCode: ResistorIcon,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: screenPadding,
     paddingVertical: spacing.lg,
     borderBottomWidth: 1,
     gap: spacing.md,
