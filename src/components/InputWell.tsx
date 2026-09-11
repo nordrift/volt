@@ -1,21 +1,38 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 import { radius, spacing, touch, type, useTheme } from "@/theme";
 
 export type InputWellProps = {
   label: string;
   unit: string;
-  /** Raw typed digits, not yet parsed — "" renders as an em dash, never a 0. */
+  /** Raw typed digits, not yet parsed — "" renders `placeholder`, never a 0. */
   value: string;
   focused: boolean;
   onPress: () => void;
+  /** Shown in place of the value when empty. Defaults to an em dash — see
+   * DESIGN.md § Input well. A screen may override it (e.g. "Enter resistance"). */
+  placeholder?: string;
+  /**
+   * Layout only — e.g. `flex: 1` when placed in a row of equal-width wells.
+   * Not set by the component itself: a lone well in a column shouldn't be
+   * forced to flex-grow against an undefined-height parent.
+   */
+  style?: StyleProp<ViewStyle>;
 };
 
 // DESIGN.md § Components — Input well.
-export function InputWell({ label, unit, value, focused, onPress }: InputWellProps) {
+export function InputWell({
+  label,
+  unit,
+  value,
+  focused,
+  onPress,
+  placeholder = "—",
+  style,
+}: InputWellProps) {
   const theme = useTheme();
 
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable onPress={onPress} style={[styles.container, style]}>
       <Text style={[styles.label, { color: focused ? theme.textPrimary : theme.textSecondary }]}>
         {label}
       </Text>
@@ -32,7 +49,7 @@ export function InputWell({ label, unit, value, focused, onPress }: InputWellPro
           style={[styles.value, { color: value ? theme.textPrimary : theme.textTertiary }]}
           numberOfLines={1}
         >
-          {value || "—"}
+          {value || placeholder}
         </Text>
         <Text style={[styles.unit, { color: theme.textSecondary }]}>{unit}</Text>
       </View>
@@ -42,7 +59,6 @@ export function InputWell({ label, unit, value, focused, onPress }: InputWellPro
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     gap: spacing.xs,
   },
   label: {

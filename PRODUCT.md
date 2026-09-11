@@ -36,11 +36,12 @@ The Play Store has dozens of resistor calculators. Nearly all are ad-heavy, slow
 
 ### 1. Resistor colour code
 
-Bidirectional. Bands to value, and value to bands.
+Bidirectional. Decode mode reads bands to a value; Encode mode enters a
+value and gets bands back.
 
 - Supports 4-band, 5-band, and 6-band
 - Output: resistance, tolerance, temperature coefficient (6-band only)
-- Reverse mode: enter a resistance, get the band colours
+- Encode mode: enter a resistance, get the band colours
 
 Band meanings:
 | Bands | Layout |
@@ -131,7 +132,7 @@ Not "later maybe" — deliberately excluded so v1 ships:
 | Screen | Purpose |
 |---|---|
 | Home | The five tools, tap to open. Header carries the light/dark toggle and About link |
-| Resistor Colour Code | Band pickers + result, with reverse mode toggle |
+| Resistor Colour Code | Band pickers + result, with a decode/encode toggle |
 | Ohm's Law | Four fields, fill any two, two calculated |
 | Voltage Divider | Three fields + reverse mode |
 | LED Resistor | Three fields, result with warnings |

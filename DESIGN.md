@@ -92,6 +92,7 @@ a second theme instead of a second dark step:
 | `well-light` | `#f4f2ed` | Input wells, keypad keys on light theme (designed, not sampled: no well appears in the Home mockup) |
 | `well-pressed-light` | `#ece9e1` | Pressed state on a well or key (designed, not sampled) |
 | `hairline-light` | `#e8e6de` | Row separators, zone divisions |
+| `surface-tan-light` | `#c9976a` | The resistor body in the colour-code illustration (designed, not sampled — deeper than the dark `surface-tan` so it still reads against white) |
 
 Every value above except the three marked "designed, not sampled" was read
 directly off `design/Volt Home-selection-light.png` with a colour picker —
@@ -271,9 +272,24 @@ text in `surface-sand` at `label` size. States what is wrong and what to do —
 *"Exceeds 1/4 W — use a 1/2 W resistor."* No icon, no apology.
 
 ### Segmented control
-Band count, series selector, forward/reverse mode. `well` track, radius `sm`,
-selected segment fills `well-pressed` with a 1px `accent-fjord` top edge, label
-in `canvas`. 56 tall.
+Band count, series selector, mode toggles (decode/encode, forward/reverse).
+`well` track, radius `sm`, selected segment fills `well-pressed` with a 1px
+`accent-fjord` top edge, label in `canvas`. 56 tall.
+
+### Value picker
+For a property the user knows by its real value — a percentage, a ppm
+figure — not by the paint colour on a band. Looks like an input well: label
+above in `label`/`text-secondary`, closed box `well` filled, radius `sm`,
+1px `hairline` border, value in `value`/`canvas`. Tapping it opens a flat
+list of the actual values it stands for — *"±1%"*, *"±0.1%"*, *"100 ppm"* —
+never colours. One tap selects and closes it.
+
+Used for Tolerance and Temp. coefficient in the resistor screen's Encode
+mode, where the user is typing a resistance and already knows the
+percentage they want — picking that by band colour would be backwards.
+Decode mode is unaffected: picking colours to build a value is the correct
+model there, so its tolerance and temp. coefficient bands still use the
+same colour swatches as every other band.
 
 ### Home row
 Full-bleed, content-sized — not stretched to fill the screen. Empty space
@@ -307,11 +323,28 @@ digit or multiplier in `caption`/`text-secondary`. The band being edited gets an
 - Entered wells sit low, in thumb reach, below the calculated zone.
 - Home's list is top-aligned under the header, content-sized rows, not
   bottom-weighted — confirmed by the approved mockup.
+- Decode/encode mode on the resistor screen is a segmented control, not
+  whole-screen inversion. Decode and encode share the screen; the
+  Segmented control switches between them instantly, no navigation.
+- Encode mode picks tolerance and temperature coefficient by their value
+  (a Value picker — *"±5%"*, *"100 ppm"*) rather than by colour swatch. A
+  user typing a resistance already knows the percentage they want, not the
+  band colour; Decode mode still picks every band by colour, tolerance and
+  temp. coefficient included, since building a value from colours is the
+  correct model there.
+- The Encode Input row aligns to the keypad's own horizontal inset
+  (`spacing.sm`, not the screen's usual 20) rather than the standard screen
+  padding, so the Resistance, Tolerance, and (6-band) Temp. coefficient box
+  edges line up with the keypad beneath them.
+- The Encode Input row is Resistance/Tolerance at 60/40 on 4-band and
+  5-band, and Resistance/Tolerance/Temp. coefficient at 50/25/25 on 6-band.
+  The result line above it is never split with a picker, on any band
+  count — it stays the one plain calculated line, matching 4-band and
+  5-band exactly, with everything the row needs to size for it in the
+  Entered zone instead.
 
 ## Still open
 
-1. Reverse mode on the resistor screen — segmented control, or whole-screen
-   inversion?
-2. E-series results — three values as a row, or a stack?
-3. Does the Entered zone use a two-column grid on screens with four fields, as
+1. E-series results — three values as a row, or a stack?
+2. Does the Entered zone use a two-column grid on screens with four fields, as
    the Ohm's law mockup does, or stay single-column everywhere for consistency?

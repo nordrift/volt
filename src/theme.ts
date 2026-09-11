@@ -27,6 +27,9 @@ export type ThemeColors = {
   well: string;
   wellPressed: string;
   hairline: string;
+  /** The resistor illustration's body — the one place the fill itself isn't
+   * a fixed IEC colour, since only the bands are. */
+  surfaceTan: string;
   chips: Record<ToolKey, ToolChip>;
 };
 
@@ -44,6 +47,7 @@ const dark: ThemeColors = {
   well: "#12161c",
   wellPressed: "#1a1f27",
   hairline: "#1e2530", // hairline-dark
+  surfaceTan: "#d4a27f", // surface-tan
   chips: {
     resistorColourCode: { bg: "#2a2116", glyph: "#d4a27f" }, // glyph = surface-tan
     ohmsLaw: { bg: "#21203a", glyph: "#cbcadb" }, // glyph = accent-frost
@@ -69,6 +73,7 @@ const light: ThemeColors = {
   well: "#f4f2ed", // well-light
   wellPressed: "#ece9e1", // well-pressed-light
   hairline: "#e8e6de", // hairline-light
+  surfaceTan: "#c9976a", // surface-tan-light — designed, not sampled: no mockup shows this yet
   chips: {
     resistorColourCode: { bg: "#f4e7d0", glyph: "#8a6534" },
     ohmsLaw: { bg: "#e4e3ed", glyph: "#3c3a63" }, // glyph = accent-indigo

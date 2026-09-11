@@ -153,6 +153,7 @@ export default function OhmsLaw() {
           {enteredOrder.map((field) => (
             <InputWell
               key={field}
+              style={styles.well}
               label={FIELD_META[field].label}
               unit={FIELD_META[field].unit}
               value={rawValues[field]}
@@ -221,5 +222,8 @@ const styles = StyleSheet.create({
   enteredRow: {
     flexDirection: "row",
     gap: spacing.md,
+  },
+  well: {
+    flex: 1,
   },
 });
