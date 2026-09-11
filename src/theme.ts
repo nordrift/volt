@@ -1,0 +1,186 @@
+import { useSyncExternalStore } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export type ThemeName = "light" | "dark";
+
+export type ToolKey =
+  | "resistorColourCode"
+  | "ohmsLaw"
+  | "voltageDivider"
+  | "ledResistor"
+  | "eSeriesLookup";
+
+type ToolChip = { bg: string; glyph: string };
+
+export type ThemeColors = {
+  name: ThemeName;
+  background: string;
+  textPrimary: string;
+  textSecondary: string;
+  textTertiary: string;
+  /** Calculated values — `accent-frost` (dark) / `accent-indigo` (light). */
+  accentCalculated: string;
+  /** Focus ring, active selection — `accent-fjord` (dark) / `accent-indigo` (light). */
+  accentFocus: string;
+  warning: string;
+  well: string;
+  wellPressed: string;
+  hairline: string;
+  chips: Record<ToolKey, ToolChip>;
+};
+
+// DESIGN.md § Colour — Dark theme. Values unchanged from the parent-inherited
+// tokens plus Volt's own well/well-pressed/hairline-dark additions.
+const dark: ThemeColors = {
+  name: "dark",
+  background: "#000000", // inverse
+  textPrimary: "#faf9f5", // canvas
+  textSecondary: "#b0aea5", // text-secondary
+  textTertiary: "#87867f", // text-tertiary
+  accentCalculated: "#cbcadb", // accent-frost
+  accentFocus: "#7289c0", // accent-fjord
+  warning: "#ebdbbc", // surface-sand
+  well: "#12161c",
+  wellPressed: "#1a1f27",
+  hairline: "#1e2530", // hairline-dark
+  chips: {
+    resistorColourCode: { bg: "#2a2116", glyph: "#d4a27f" }, // glyph = surface-tan
+    ohmsLaw: { bg: "#21203a", glyph: "#cbcadb" }, // glyph = accent-frost
+    voltageDivider: { bg: "#182034", glyph: "#8fa3d4" },
+    ledResistor: { bg: "#2b1d27", glyph: "#c98fb2" },
+    eSeriesLookup: { bg: "#16241c", glyph: "#8ab29c" },
+  },
+};
+
+// DESIGN.md § Colour — Light theme. Volt-local: the parent system has no
+// light palette to inherit. Every value here (except well/well-pressed/
+// warning, marked in DESIGN.md as "designed, not sampled") was read directly
+// off design/Volt Home-selection-light.png with a colour picker.
+const light: ThemeColors = {
+  name: "light",
+  background: "#ffffff", // canvas-light
+  textPrimary: "#141413", // text-primary-light
+  textSecondary: "#5e5d59", // text-secondary-light
+  textTertiary: "#b0aea5", // text-tertiary-light
+  accentCalculated: "#3c3a63", // accent-indigo
+  accentFocus: "#3c3a63", // accent-indigo
+  warning: "#9c6b2c", // surface-sand-light
+  well: "#f4f2ed", // well-light
+  wellPressed: "#ece9e1", // well-pressed-light
+  hairline: "#e8e6de", // hairline-light
+  chips: {
+    resistorColourCode: { bg: "#f4e7d0", glyph: "#8a6534" },
+    ohmsLaw: { bg: "#e4e3ed", glyph: "#3c3a63" }, // glyph = accent-indigo
+    voltageDivider: { bg: "#e1e6f2", glyph: "#47598a" },
+    ledResistor: { bg: "#efe0ea", glyph: "#854c70" },
+    eSeriesLookup: { bg: "#dfe9e3", glyph: "#3f6450" },
+  },
+};
+
+export const themes: Record<ThemeName, ThemeColors> = { light, dark };
+
+// DESIGN.md § Spacing
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  "2xl": 32,
+  "3xl": 48,
+} as const;
+
+// DESIGN.md § Radius
+export const radius = {
+  sm: 8,
+  none: 0,
+} as const;
+
+// DESIGN.md § Touch
+export const touch = {
+  minHeight: 56,
+} as const;
+
+// DESIGN.md § Motion
+export const motion = {
+  duration: 120,
+} as const;
+
+export const fontFamilies = {
+  interRegular: "Inter-Regular",
+  interSemiBold: "Inter-SemiBold",
+  monoRegular: "JetBrainsMono-Regular",
+  monoMedium: "JetBrainsMono-Medium",
+} as const;
+
+// DESIGN.md § Type
+export const type = {
+  readout: { fontFamily: fontFamilies.monoMedium, fontSize: 44, lineHeight: 52 },
+  readoutUnit: { fontFamily: fontFamilies.monoRegular, fontSize: 18, lineHeight: 26 },
+  value: { fontFamily: fontFamilies.monoRegular, fontSize: 20, lineHeight: 26 },
+  key: { fontFamily: fontFamilies.monoRegular, fontSize: 22, lineHeight: 28 },
+  screenTitle: { fontFamily: fontFamilies.interSemiBold, fontSize: 26, lineHeight: 32 },
+  toolName: { fontFamily: fontFamilies.interSemiBold, fontSize: 19, lineHeight: 24 },
+  body: { fontFamily: fontFamilies.interRegular, fontSize: 16, lineHeight: 22 },
+  label: { fontFamily: fontFamilies.interRegular, fontSize: 14, lineHeight: 18 },
+  caption: { fontFamily: fontFamilies.interRegular, fontSize: 12, lineHeight: 16 },
+} as const;
+
+// --- Theme store -----------------------------------------------------------
+// DESIGN.md § Theme persistence. A module-level store, not Context/Redux/
+// Zustand (see CLAUDE.md § State) — theme is the one piece of state every
+// screen needs without prop-drilling through the stack.
+
+const STORAGE_KEY = "volt.theme";
+
+type Listener = () => void;
+const listeners = new Set<Listener>();
+let activeThemeName: ThemeName = "light";
+
+function notify() {
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: Listener) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot(): ThemeName {
+  return activeThemeName;
+}
+
+/** Switches theme immediately and persists the choice. Fire-and-forget. */
+export function setThemeName(name: ThemeName) {
+  activeThemeName = name;
+  notify();
+  AsyncStorage.setItem(STORAGE_KEY, name).catch(() => {
+    // Theme still applies for this session even if the write fails.
+  });
+}
+
+/**
+ * Resolves the starting theme: the user's saved choice if one exists,
+ * otherwise the system colour scheme. Call once, from the root layout,
+ * before the first screen renders.
+ */
+export async function loadInitialTheme(systemScheme: ThemeName): Promise<void> {
+  let stored: string | null = null;
+  try {
+    stored = await AsyncStorage.getItem(STORAGE_KEY);
+  } catch {
+    stored = null;
+  }
+  activeThemeName = stored === "light" || stored === "dark" ? stored : systemScheme;
+  notify();
+}
+
+export function useThemeName(): ThemeName {
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+export function useTheme(): ThemeColors {
+  return themes[useThemeName()];
+}

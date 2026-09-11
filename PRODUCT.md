@@ -119,8 +119,8 @@ Not "later maybe" — deliberately excluded so v1 ships:
 - Pinout references
 - Unit conversion
 - Saved history or favourites
-- Settings screen
-- **Light mode** — v1 runs the dark product surface only
+- Settings screen — the light/dark toggle lives in the Home header, not a
+  dedicated settings screen
 - Accounts, sync, cloud
 - Ads, analytics, crash reporting
 
@@ -130,7 +130,7 @@ Not "later maybe" — deliberately excluded so v1 ships:
 
 | Screen | Purpose |
 |---|---|
-| Home | The five tools. Tap to open |
+| Home | The five tools, tap to open. Header carries the light/dark toggle and About link |
 | Resistor Colour Code | Band pickers + result, with reverse mode toggle |
 | Ohm's Law | Four fields, fill any two, two calculated |
 | Voltage Divider | Three fields + reverse mode |
@@ -160,17 +160,23 @@ This is the only bespoke input control in the app.
 
 ## Data model
 
-**None.**
+**Effectively none — one carve-out.**
 
-- Nothing is stored on device between sessions
+- The only value written to disk is the user's chosen theme (light or dark),
+  stored locally via AsyncStorage so it survives a relaunch
+- Nothing else is stored on device between sessions
 - Nothing is transmitted anywhere
 - No user accounts
 - No identifiers collected
 - No analytics, no crash reporting SDK in v1
 
-All state is per-screen and ephemeral. Close the app, it forgets.
+All other state is per-screen and ephemeral. Close the app, every calculation
+forgets — only the theme choice remains.
 
-This is a product decision, not a limitation. It makes the privacy policy trivially honest and the Data Safety form a straight set of "no" answers.
+This is still a product decision, not a limitation. Theme preference carries
+no personal data and stays entirely on-device, so the privacy policy stays
+trivially honest and the Data Safety form stays a straight set of "no"
+answers.
 
 ---
 
@@ -187,8 +193,8 @@ This is a product decision, not a limitation. It makes the privacy policy trivia
 | Framework | React Native + Expo SDK 57 | Fastest path to a working Android build |
 | Language | TypeScript, strict | Catches errors before runtime; better portfolio signal |
 | Routing | Expo Router | File-based, current default, less boilerplate |
-| State | React `useState` | No global state needed. Don't add Redux or Zustand |
-| Storage | None | Nothing to persist in v1 |
+| State | React `useState`, plus a small module-level store for theme | Theme must be readable from every screen; still no Redux, no Zustand, no Context |
+| Storage | AsyncStorage | Theme preference only — the one persisted value |
 | Styling | `StyleSheet` + `src/theme.ts` | No UI library. Keeps bundle small and design consistent |
 | Type | `expo-font` + Inter 400/600, JetBrains Mono 400/500 | Inter is the Nordrift system's documented fallback for Söhne, which needs a paid Klim licence. Mono numerals hold their width as values update live |
 | Keypad | Hand-built, no dependency | Twelve keys and a press state. Nothing to install |
@@ -207,16 +213,21 @@ results, stack navigation, one-handed touch targets. Those live in Volt's
 
 The short version:
 
-- **Dark product surface.** The parent's `inverse` band applied to a whole app.
-- **No indigo anywhere.** The parent documents indigo as unreadable on black at
-  1.98:1, with frost as the dark-surface accent. Volt runs on frost and fjord.
-  This is the system's rule, followed — not a deviation.
+- **Two themes, light default.** A toggle in the Home header switches between
+  them; the choice persists locally. Every screen reads the same token names,
+  only the values change.
+- **Indigo is light-only.** The parent documents indigo as unreadable on
+  black at 1.98:1, so dark theme keeps frost and fjord as its accent; light
+  theme uses indigo (`#3c3a63`) as its brand accent instead, where it has
+  full contrast on white.
 - **Position carries meaning, colour reinforces it.** Calculated values sit in
   their own zone. The layout would survive greyscale.
 - **No shadows, no gradient depth.** The parent's elevation model is surface
   contrast plus a hairline, and it holds here.
 - **Resistor bands are the exception.** Standardised data, not styling. They
   render at true colour on a tan component body so black and brown stay legible.
+- **One muted hue per tool.** A custom SVG icon in a coloured chip on each
+  Home row — the one place colour decorates rather than signalling state.
 - **Grotesque and mono only.** The editorial serif is a marketing face and has
   no role on this surface.
 - Large touch targets, a permanent keypad, live results, no Calculate button

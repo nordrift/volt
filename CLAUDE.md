@@ -16,8 +16,8 @@ anything; read the third when a token's origin matters.
 | React | 19.2.3 |
 | TypeScript | 6.x, `strict: true` |
 | Routing | Expo Router 57, file-based, stack only |
-| State | React `useState`. No Redux, no Zustand, no context for app state |
-| Storage | None |
+| State | React `useState`, plus one small module-level store for theme (`useSyncExternalStore`, not Context/Redux/Zustand) |
+| Storage | AsyncStorage — theme preference only |
 | Styling | `StyleSheet` + `src/theme.ts`. No UI library |
 | Type | `expo-font`, Inter 400/600 + JetBrains Mono 400/500 |
 | Tests | Jest via `jest-expo`, on `src/lib` only |
@@ -58,17 +58,25 @@ reinforces it; the layout alone would survive greyscale.
 
 - **No literal values in components.** Every colour, size, radius and spacing
   value comes from `src/theme.ts`. A hex code in a screen file is a bug.
-- **Dark only.** No light mode, no `useColorScheme`, no toggle.
-- **No indigo.** Volt runs the dark product surface, where the Nordrift system
-  documents indigo as unreadable (1.98:1 on black). `accent-frost` is the
-  dark-surface accent; `accent-fjord` carries focus and selection. If you find
-  yourself reaching for `#3c3a63`, the register is wrong.
+- **Theme is switchable; light is default.** The header carries a light/dark
+  toggle. `useColorScheme` sets the initial default on first launch; after
+  the user taps the toggle, that explicit choice is remembered instead (see
+  persistence, below). Every screen reads the same token names from
+  `src/theme.ts` — only the values swap per theme.
+- **Indigo is a light-surface accent, never a dark one.** `#3c3a63`
+  (`accent-indigo`) anchors Ohm's law and the other tools' icon-chip glyphs
+  on the light theme's white surface, where it has full contrast. On the
+  dark surface it hits 1.98:1 on black and is unreadable — the Nordrift
+  system's own rule — so dark theme keeps `accent-frost` as its accent and
+  `accent-fjord` for focus and selection. Each theme keeps to its own accent;
+  never mix them on one screen.
 - **No shadows, no gradient depth.** Elevation is surface contrast plus a
   hairline. `elevation`, `shadowColor` and any gradient library are all wrong
   answers here.
-- **Colour signals state, never decorates.** Frost for calculated values, fjord
-  for focus and selection, sand for a warning, true band colours inside the
-  resistor illustration. Nowhere else.
+- **Colour signals state, with one named exception.** Frost for calculated
+  values, fjord for focus and selection, sand for a warning, true band
+  colours inside the resistor illustration, and one muted hue per tool inside
+  the Home row's icon chip. Nowhere else does colour decorate.
 - **Mono is for numbers.** Readouts, values and keypad glyphs use JetBrains
   Mono. Labels, titles and captions use Inter. Never the reverse.
 - **No serif.** The editorial face belongs to the marketing surface.
@@ -89,8 +97,10 @@ npx expo-doctor    # dependency / config sanity check
 ## Constraints that are decisions, not oversights
 
 - **Package ID `dev.nordrift.volt` is permanent.** Never change it.
-- **No persistence.** Nothing is written to disk between sessions. Do not add
-  AsyncStorage, MMKV, SQLite, or any cache.
+- **No persistence, with one exception.** Theme preference (light or dark) is
+  the only value written to disk, via AsyncStorage, so it survives a
+  relaunch. Nothing else persists — no calculation history, no favourites, no
+  other cache. Do not add MMKV, SQLite, or any other storage mechanism.
 - **No network.** No fetch, no SDK that phones home. No analytics, no crash
   reporting in v1.
 - **No permissions.** Do not add a config plugin that requests one.
@@ -105,7 +115,17 @@ npx expo-doctor    # dependency / config sanity check
   not JS imports them.
 - **External links use `Linking.openURL`** from `react-native`.
 - **No new dependency without asking first.** Say what it is, what it costs in
-  APK size, and what the alternative is.
+  APK size, and what the alternative is. Two exceptions already asked and
+  answered:
+  - `@react-native-async-storage/async-storage`, for the theme
+    preference — Expo's standard for small persisted values, autolinked,
+    negligible APK cost. `expo-secure-store` was the alternative considered
+    and rejected: it's encryption-backed for secrets, which a theme flag isn't.
+  - `react-native-svg`, for the five Home-row tool icons — the de facto
+    standard for vector graphics in React Native, autolinked. The
+    dependency-free alternative (hand-built `View`/border-radius shapes) was
+    rejected: it can't reach the mockups' fidelity for the resistor bands,
+    the Ω glyph, or the E-series staircase.
 - Out of scope for v1 is listed in `PRODUCT.md`. Treat that list as binding.
 
 ## Copy rules
