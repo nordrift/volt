@@ -1,5 +1,6 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Easing, useSharedValue, withTiming, type SharedValue } from "react-native-reanimated";
 
 export type ThemeName = "light" | "dark";
 
@@ -104,6 +105,8 @@ export const touch = {
 // DESIGN.md § Motion
 export const motion = {
   duration: 120,
+  /** DESIGN.md § Theme persistence — the toggle's crossfade, its own named exception. */
+  themeTransitionDuration: 200,
 } as const;
 
 export const fontFamilies = {
@@ -183,4 +186,48 @@ export function useThemeName(): ThemeName {
 
 export function useTheme(): ThemeColors {
   return themes[useThemeName()];
+}
+
+// --- Theme transition --------------------------------------------------
+// Drives the ~200ms crossfade on the Home screen when the toggle is tapped.
+// One driver, created once by the Home screen and passed down, so every
+// animated colour on screen moves in exact lockstep — see HomeHeader/HomeRow.
+
+export type ThemeTransition = {
+  progress: SharedValue<number>;
+  fromName: ThemeName;
+  toName: ThemeName;
+  from: ThemeColors;
+  to: ThemeColors;
+};
+
+export function useThemeTransition(): ThemeTransition {
+  const name = useThemeName();
+  const progress = useSharedValue(1);
+  const prevName = useRef<ThemeName>(name);
+  const [pair, setPair] = useState<{ fromName: ThemeName; toName: ThemeName }>({
+    fromName: name,
+    toName: name,
+  });
+
+  useEffect(() => {
+    if (prevName.current === name) {
+      return;
+    }
+    setPair({ fromName: prevName.current, toName: name });
+    prevName.current = name;
+    progress.value = 0;
+    progress.value = withTiming(1, {
+      duration: motion.themeTransitionDuration,
+      easing: Easing.out(Easing.cubic),
+    });
+  }, [name, progress]);
+
+  return {
+    progress,
+    fromName: pair.fromName,
+    toName: pair.toName,
+    from: themes[pair.fromName],
+    to: themes[pair.toName],
+  };
 }

@@ -1,7 +1,9 @@
 import type { Href } from "expo-router";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+import { CrossfadeIcon } from "@/components/CrossfadeIcon";
 import {
   ESeriesIcon,
   LedResistorIcon,
@@ -10,7 +12,7 @@ import {
   VoltageDividerIcon,
   type ToolIconProps,
 } from "@/components/icons";
-import { radius, spacing, type, useTheme, type ToolKey } from "@/theme";
+import { radius, spacing, type, type ThemeTransition, type ToolKey } from "@/theme";
 
 const ICONS: Record<ToolKey, (props: ToolIconProps) => React.JSX.Element> = {
   resistorColourCode: ResistorIcon,
@@ -41,31 +43,56 @@ export type HomeRowProps = {
   href: Href;
 };
 
+export type HomeRowComponentProps = HomeRowProps & {
+  transition: ThemeTransition;
+};
+
 // DESIGN.md § Components — Home row.
-export function HomeRow({ toolKey, title, subtitle, href }: HomeRowProps) {
-  const theme = useTheme();
+export function HomeRow({ toolKey, title, subtitle, href, transition }: HomeRowComponentProps) {
+  const { progress, from, to } = transition;
   const Icon = ICONS[toolKey];
-  const chip = theme.chips[toolKey];
+  const fromChip = from.chips[toolKey];
+  const toChip = to.chips[toolKey];
+
+  const borderStyle = useAnimatedStyle(() => ({
+    borderBottomColor: interpolateColor(progress.value, [0, 1], [from.hairline, to.hairline]),
+  }));
+  const titleStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(progress.value, [0, 1], [from.textPrimary, to.textPrimary]),
+  }));
+  const subtitleStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(progress.value, [0, 1], [from.textSecondary, to.textSecondary]),
+  }));
+  const chipStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(progress.value, [0, 1], [fromChip.bg, toChip.bg]),
+  }));
 
   return (
-    <Pressable
-      onPress={() => router.push(href)}
-      style={({ pressed }) => [
-        styles.row,
-        {
-          borderBottomColor: theme.hairline,
-          backgroundColor: pressed ? theme.wellPressed : "transparent",
-        },
-      ]}
-    >
-      <View style={[styles.chip, { backgroundColor: chip.bg, borderRadius: radius.sm }]}>
-        <Icon color={chip.glyph} />
-      </View>
-      <View style={styles.text}>
-        <Text style={[styles.title, { color: theme.textPrimary }]}>{title}</Text>
-        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{subtitle}</Text>
-      </View>
-      <Chevron color={theme.textTertiary} />
+    <Pressable onPress={() => router.push(href)}>
+      {({ pressed }) => (
+        <Animated.View
+          style={[styles.row, borderStyle, pressed && { backgroundColor: to.wellPressed }]}
+        >
+          <Animated.View style={[styles.chip, chipStyle]}>
+            <CrossfadeIcon
+              progress={progress}
+              size={22}
+              renderFrom={() => <Icon color={fromChip.glyph} />}
+              renderTo={() => <Icon color={toChip.glyph} />}
+            />
+          </Animated.View>
+          <View style={styles.text}>
+            <Animated.Text style={[styles.title, titleStyle]}>{title}</Animated.Text>
+            <Animated.Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Animated.Text>
+          </View>
+          <CrossfadeIcon
+            progress={progress}
+            size={16}
+            renderFrom={() => <Chevron color={from.textTertiary} />}
+            renderTo={() => <Chevron color={to.textTertiary} />}
+          />
+        </Animated.View>
+      )}
     </Pressable>
   );
 }
@@ -84,6 +111,7 @@ const styles = StyleSheet.create({
     height: 38,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: radius.sm,
   },
   text: {
     flex: 1,

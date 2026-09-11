@@ -1,8 +1,11 @@
 import { StyleSheet, View } from "react-native";
+import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HomeHeader } from "@/components/HomeHeader";
 import { HomeRow, type HomeRowProps } from "@/components/HomeRow";
-import { useTheme } from "@/theme";
+import { useThemeTransition } from "@/theme";
+
+const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 const TOOLS: HomeRowProps[] = [
   {
@@ -38,17 +41,25 @@ const TOOLS: HomeRowProps[] = [
 ];
 
 export default function Home() {
-  const theme = useTheme();
+  // Created once here and passed down so every animated colour on screen —
+  // header, rows, chips, chevrons — moves off the exact same driver in
+  // lockstep. See theme.ts § Theme transition.
+  const transition = useThemeTransition();
+  const { progress, from, to } = transition;
+
+  const backgroundStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(progress.value, [0, 1], [from.background, to.background]),
+  }));
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: theme.background }]} edges={["top"]}>
-      <HomeHeader />
+    <AnimatedSafeAreaView style={[styles.screen, backgroundStyle]} edges={["top"]}>
+      <HomeHeader transition={transition} />
       <View>
         {TOOLS.map((tool) => (
-          <HomeRow key={tool.toolKey} {...tool} />
+          <HomeRow key={tool.toolKey} {...tool} transition={transition} />
         ))}
       </View>
-    </SafeAreaView>
+    </AnimatedSafeAreaView>
   );
 }
 

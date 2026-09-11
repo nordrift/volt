@@ -174,6 +174,11 @@ one-handed while holding a component, so it gets more. Keypad keys run taller.
 120ms, ease-out, on exactly two things: focus moving between fields, and a
 displayed value changing. Nothing animates on mount. Nothing animates on scroll.
 
+The theme toggle is a third, slower exception: 200ms ease-out, because it's
+crossfading colour across the whole visible screen at once (background,
+text, hairlines, icon-chip glyphs) rather than one field — 120ms reads as a
+flicker at that scale. See Theme persistence.
+
 ## Theme persistence
 
 The chosen theme is the one piece of state Volt writes to disk. On first
@@ -217,8 +222,8 @@ there's no back arrow and nothing to reset. "Volt" left, in `screenTitle`/
 mockup renders "About" in the same ink as the title (`text-primary`), not a
 dimmer secondary colour; it reads as lighter only because it's set in `body`
 weight 400 at a smaller size, not because the colour changes. Tapping the
-toggle switches theme immediately (120ms ease-out on the colours that change)
-and persists the choice — see Theme persistence.
+toggle crossfades the whole screen to the new theme over 200ms ease-out (see
+Motion) and persists the choice — see Theme persistence.
 
 ### Calculated zone
 `inverse` background, 20 horizontal padding, 24 vertical. Heading "Calculated"

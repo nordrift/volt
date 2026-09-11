@@ -1,6 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
-import { setThemeName, spacing, touch, type, useTheme, useThemeName } from "@/theme";
+import { CrossfadeIcon } from "@/components/CrossfadeIcon";
+import { setThemeName, spacing, touch, type, type ThemeTransition } from "@/theme";
 
 function SunIcon({ color }: { color: string }) {
   return (
@@ -31,33 +33,48 @@ function MoonIcon({ color }: { color: string }) {
   );
 }
 
+function ToggleGlyph({ name, color }: { name: "light" | "dark"; color: string }) {
+  return name === "light" ? <MoonIcon color={color} /> : <SunIcon color={color} />;
+}
+
+export type HomeHeaderProps = {
+  transition: ThemeTransition;
+};
+
 // DESIGN.md § Home header. Not shown in the mockups as a distinct control —
 // the two mockups are the toggle's before/after states, not a drawing of the
 // switch itself — so this icon-only sun/moon button is a new but minimal
 // choice, not a sampled one.
-export function HomeHeader() {
-  const theme = useTheme();
-  const themeName = useThemeName();
+export function HomeHeader({ transition }: HomeHeaderProps) {
+  const { progress, fromName, toName, from, to } = transition;
+
+  const borderStyle = useAnimatedStyle(() => ({
+    borderBottomColor: interpolateColor(progress.value, [0, 1], [from.hairline, to.hairline]),
+  }));
+  const textStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(progress.value, [0, 1], [from.textPrimary, to.textPrimary]),
+  }));
 
   return (
-    <View style={[styles.container, { borderBottomColor: theme.hairline }]}>
-      <Text style={[styles.title, { color: theme.textPrimary }]}>Volt</Text>
+    <Animated.View style={[styles.container, borderStyle]}>
+      <Animated.Text style={[styles.title, textStyle]}>Volt</Animated.Text>
       <View style={styles.actions}>
         <Pressable
-          onPress={() => setThemeName(themeName === "light" ? "dark" : "light")}
+          onPress={() => setThemeName(toName === "light" ? "dark" : "light")}
           hitSlop={12}
           style={styles.toggle}
         >
-          {themeName === "light" ? (
-            <MoonIcon color={theme.textPrimary} />
-          ) : (
-            <SunIcon color={theme.textPrimary} />
-          )}
+          <CrossfadeIcon
+            progress={progress}
+            size={18}
+            renderFrom={() => <ToggleGlyph name={fromName} color={from.textPrimary} />}
+            renderTo={() => <ToggleGlyph name={toName} color={to.textPrimary} />}
+          />
         </Pressable>
         {/* About screen is a later build step — this reads as inert for now. */}
-        <Text style={[styles.about, { color: theme.textPrimary }]}>About</Text>
+        <Animated.Text style={[styles.about, textStyle]}>About</Animated.Text>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
