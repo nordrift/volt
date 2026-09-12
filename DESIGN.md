@@ -342,9 +342,19 @@ digit or multiplier in `caption`/`text-secondary`. The band being edited gets an
   count — it stays the one plain calculated line, matching 4-band and
   5-band exactly, with everything the row needs to size for it in the
   Entered zone instead.
+- E-series results render as a row, not a stack. Voltage divider's reverse
+  mode is the first case: each R1/R2 suggestion is one scannable line — R1,
+  R2, Vout, error — not four stacked fields. E-series lookup's own
+  nearest/below/above should follow the same shape.
+- Voltage divider's reverse-mode suggestions aren't fixed to one E-series.
+  It searches E12, E24, and E96 independently, merges the results (a value
+  achievable in more than one series keeps its easiest-to-source label —
+  E12 over E24 over E96 — rather than appearing once per series), then
+  ranks by error and caps at 10. The series each surviving pair came from
+  renders as a quiet label per row, so the user can weigh "closest match"
+  against "easiest to find in a parts drawer" themselves.
 
 ## Still open
 
-1. E-series results — three values as a row, or a stack?
-2. Does the Entered zone use a two-column grid on screens with four fields, as
+1. Does the Entered zone use a two-column grid on screens with four fields, as
    the Ohm's law mockup does, or stay single-column everywhere for consistency?
