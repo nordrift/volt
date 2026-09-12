@@ -136,13 +136,17 @@ figures hold still.
 | `body` | Inter | 16 | 400 | 22 |
 | `label` | Inter | 14 | 400 | 18 |
 | `caption` | Inter | 12 | 400 | 16 |
+| `eyebrow` | JetBrains Mono | 12 | 500 | 16, `letterSpacing` 1.5 |
 
 Weights to bundle: Inter 400 and 600, JetBrains Mono 400 and 500. Four files,
 nothing else. Sentence case throughout.
 
 The parent's `eyebrow` role — JetBrains Mono, uppercase — appears in exactly one
 place in Volt: `BY NORDRIFT` beneath the wordmark on the About screen, per the
-parent's sub-brand lockup rule. Nowhere else.
+parent's sub-brand lockup rule. Nowhere else. The parent file names the role but
+never pins it to a size; the row above is Volt's own concrete value, set when
+the About screen first needed it — small and tracked out, like a caption
+wearing small caps.
 
 ## Spacing
 

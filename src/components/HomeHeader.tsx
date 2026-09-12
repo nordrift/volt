@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
@@ -71,8 +72,9 @@ export function HomeHeader({ transition }: HomeHeaderProps) {
             renderTo={() => <ToggleGlyph name={toName} color={to.textPrimary} />}
           />
         </Pressable>
-        {/* About screen is a later build step — this reads as inert for now. */}
-        <Animated.Text style={[styles.about, textStyle]}>About</Animated.Text>
+        <Pressable onPress={() => router.push("/about")} hitSlop={12}>
+          <Animated.Text style={[styles.about, textStyle]}>About</Animated.Text>
+        </Pressable>
       </View>
     </Animated.View>
   );

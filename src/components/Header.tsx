@@ -19,7 +19,10 @@ function BackArrow({ color }: { color: string }) {
 
 export type HeaderProps = {
   title: string;
-  onReset: () => void;
+  /** Omit for screens with nothing to reset (e.g. About) — the reset
+   * control simply doesn't render, replaced by an invisible spacer so the
+   * title stays centred. */
+  onReset?: () => void;
   /** Defaults to `router.back()`. */
   onBack?: () => void;
 };
@@ -37,9 +40,15 @@ export function Header({ title, onReset, onBack }: HeaderProps) {
       <Text style={[styles.title, { color: theme.textPrimary }]} numberOfLines={1}>
         {title}
       </Text>
-      <Pressable onPress={onReset} hitSlop={12} style={styles.side}>
-        <Text style={[styles.reset, { color: theme.textSecondary }]}>Reset</Text>
-      </Pressable>
+      {onReset ? (
+        <Pressable onPress={onReset} hitSlop={12} style={styles.side}>
+          <Text style={[styles.reset, { color: theme.textSecondary }]}>Reset</Text>
+        </Pressable>
+      ) : (
+        <View style={styles.side}>
+          <BackArrow color="transparent" />
+        </View>
+      )}
     </View>
   );
 }

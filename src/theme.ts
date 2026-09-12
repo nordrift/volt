@@ -137,6 +137,10 @@ export const type = {
   body: { fontFamily: fontFamilies.interRegular, fontSize: 16, lineHeight: 22 },
   label: { fontFamily: fontFamilies.interRegular, fontSize: 14, lineHeight: 18 },
   caption: { fontFamily: fontFamilies.interRegular, fontSize: 12, lineHeight: 16 },
+  // Referenced in DESIGN.md's Type section but never pinned to a value —
+  // this is its one real use (BY NORDRIFT on the About screen), so the
+  // concrete numbers are set here for the first time.
+  eyebrow: { fontFamily: fontFamilies.monoMedium, fontSize: 12, lineHeight: 16, letterSpacing: 1.5 },
 } as const;
 
 // --- Theme store -----------------------------------------------------------
