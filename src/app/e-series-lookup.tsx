@@ -137,7 +137,7 @@ export default function ESeriesLookup() {
     >
       <Header title="E-series lookup" onReset={handleReset} />
 
-      <Zone hairline="bottom">
+      <Zone hairline="bottom" style={styles.calculatedZone}>
         <Text style={[styles.heading, { color: theme.textSecondary }]}>Calculated</Text>
 
         {errorMessage ? (
@@ -164,12 +164,6 @@ export default function ESeriesLookup() {
         )}
       </Zone>
 
-      {/* Absorbs the leftover space so the series control, Entered zone, and
-          Keypad still sit low, in thumb reach, without the Calculated
-          zone's own bordered box stretching into a mostly-empty frame —
-          same fix as the LED resistor and resistor screens. */}
-      <View style={styles.spacer} />
-
       <Zone hairline="bottom">
         <SegmentedControl options={SERIES_OPTIONS} value={series} onChange={setSeries} />
       </Zone>
@@ -194,7 +188,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  spacer: {
+  calculatedZone: {
     flex: 1,
   },
   heading: {

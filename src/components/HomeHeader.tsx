@@ -2,8 +2,9 @@ import { router } from "expo-router";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
-import { CrossfadeIcon } from "@/components/CrossfadeIcon";
 import { screenPadding, setThemeName, spacing, touch, type, type ThemeTransition } from "@/theme";
+
+const TOGGLE_ICON_SIZE = 18;
 
 function SunIcon({ color }: { color: string }) {
   return (
@@ -38,6 +39,42 @@ function ToggleGlyph({ name, color }: { name: "light" | "dark"; color: string })
   return name === "light" ? <MoonIcon color={color} /> : <SunIcon color={color} />;
 }
 
+/**
+ * A sun and a moon aren't the same shape changing — they're two different
+ * objects trading places — so this swaps them with a directional slide
+ * rather than a crossfade: the outgoing glyph travels fully out one side
+ * while the incoming one enters from the other, both moving the same way,
+ * like a flip. Switching to light slides upward (sun rises in, moon sets
+ * out the top); switching to dark slides downward. Driven by the same
+ * `progress` value as the rest of the toggle's 200ms crossfade — a
+ * separate duration would put the icon out of step with the header text
+ * and hairline colour settling around it, and the icon only travels its
+ * own 18dp box, so 200ms reads just as cleanly for the slide as it did
+ * for the fade.
+ */
+function ToggleIconSlide({ transition }: { transition: ThemeTransition }) {
+  const { progress, fromName, toName, from, to } = transition;
+  const exitY = toName === "light" ? -TOGGLE_ICON_SIZE : TOGGLE_ICON_SIZE;
+
+  const outgoingStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: progress.value * exitY }],
+  }));
+  const incomingStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: (1 - progress.value) * -exitY }],
+  }));
+
+  return (
+    <View style={styles.toggleIconClip}>
+      <Animated.View style={[StyleSheet.absoluteFill, outgoingStyle]}>
+        <ToggleGlyph name={fromName} color={from.textPrimary} />
+      </Animated.View>
+      <Animated.View style={[StyleSheet.absoluteFill, incomingStyle]}>
+        <ToggleGlyph name={toName} color={to.textPrimary} />
+      </Animated.View>
+    </View>
+  );
+}
+
 export type HomeHeaderProps = {
   transition: ThemeTransition;
 };
@@ -47,7 +84,7 @@ export type HomeHeaderProps = {
 // switch itself — so this icon-only sun/moon button is a new but minimal
 // choice, not a sampled one.
 export function HomeHeader({ transition }: HomeHeaderProps) {
-  const { progress, fromName, toName, from, to } = transition;
+  const { progress, toName, from, to } = transition;
 
   const borderStyle = useAnimatedStyle(() => ({
     borderBottomColor: interpolateColor(progress.value, [0, 1], [from.hairline, to.hairline]),
@@ -62,17 +99,12 @@ export function HomeHeader({ transition }: HomeHeaderProps) {
       <View style={styles.actions}>
         <Pressable
           onPress={() => setThemeName(toName === "light" ? "dark" : "light")}
-          hitSlop={12}
+          hitSlop={19}
           style={styles.toggle}
         >
-          <CrossfadeIcon
-            progress={progress}
-            size={18}
-            renderFrom={() => <ToggleGlyph name={fromName} color={from.textPrimary} />}
-            renderTo={() => <ToggleGlyph name={toName} color={to.textPrimary} />}
-          />
+          <ToggleIconSlide transition={transition} />
         </Pressable>
-        <Pressable onPress={() => router.push("/about")} hitSlop={12}>
+        <Pressable onPress={() => router.push("/about")} hitSlop={17}>
           <Animated.Text style={[styles.about, textStyle]}>About</Animated.Text>
         </Pressable>
       </View>
@@ -102,6 +134,11 @@ const styles = StyleSheet.create({
   toggle: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  toggleIconClip: {
+    width: TOGGLE_ICON_SIZE,
+    height: TOGGLE_ICON_SIZE,
+    overflow: "hidden",
   },
   about: {
     fontFamily: type.body.fontFamily,

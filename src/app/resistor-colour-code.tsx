@@ -24,7 +24,7 @@ import {
   type TempCoefficientColor,
   type ToleranceColor,
 } from "@/lib/resistor-colour-code";
-import { screenPadding, spacing, type, useTheme, type ThemeColors } from "@/theme";
+import { radius, screenPadding, spacing, type, useTheme, type ThemeColors } from "@/theme";
 
 // "Decode" (bands → value) / "Encode" (value → bands) — named for what the
 // user is doing, not the data flow direction.
@@ -354,6 +354,7 @@ function SwatchRow({
           <Pressable
             key={color}
             onPress={() => onSelect(color)}
+            hitSlop={12}
             style={[
               styles.swatch,
               {
@@ -645,6 +646,6 @@ const styles = StyleSheet.create({
   swatch: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: radius.sm,
   },
 });

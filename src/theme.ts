@@ -202,6 +202,34 @@ export function useTheme(): ThemeColors {
   return themes[useThemeName()];
 }
 
+/**
+ * Same value as useThemeName(), but a change lags by the toggle's own
+ * 200ms crossfade duration instead of applying instantly. For consumers
+ * that can't animate a background themselves — the Stack's own screen
+ * surface, the native root view via expo-system-ui — and would otherwise
+ * flip to the new colour the moment the toggle is pressed, a full 200ms
+ * before Home's animated foreground has moved at all. On Android, setting
+ * those native background props triggers a repaint of a surface nothing
+ * is yet painted over, which can show as a one-frame white flash. Holding
+ * the backing layer on the old colour for the whole crossfade, then
+ * swapping only once the visible animation has caught up, means it's
+ * never exposed mid-transition.
+ */
+export function useSettledThemeName(): ThemeName {
+  const live = useThemeName();
+  const [settled, setSettled] = useState<ThemeName>(live);
+
+  useEffect(() => {
+    if (live === settled) {
+      return;
+    }
+    const timeout = setTimeout(() => setSettled(live), motion.themeTransitionDuration);
+    return () => clearTimeout(timeout);
+  }, [live, settled]);
+
+  return settled;
+}
+
 // --- Theme transition --------------------------------------------------
 // Drives the ~200ms crossfade on the Home screen when the toggle is tapped.
 // One driver, created once by the Home screen and passed down, so every

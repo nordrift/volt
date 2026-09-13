@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 import { useEffect, useMemo, useState } from "react";
 import { useColorScheme } from "react-native";
-import { loadInitialTheme, motion, useTheme, type ThemeColors } from "@/theme";
+import { loadInitialTheme, motion, themes, useSettledThemeName, type ThemeColors } from "@/theme";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -74,7 +74,15 @@ function buildNavigationTheme(t: ThemeColors): Theme {
 }
 
 function RootLayoutNav() {
-  const theme = useTheme();
+  // Deliberately not the live/animated theme — see useSettledThemeName.
+  // This drives backing layers Home's own crossfade can't reach (the
+  // Stack's screen surface, the native root view), so on a toggle they
+  // hold the old colour for the full 200ms animation instead of jumping
+  // the instant the toggle is pressed. A route change with no theme
+  // change (the normal navigation case the nav-flash fix targets) isn't
+  // affected — the value only lags behind when it's actually changing.
+  const settledThemeName = useSettledThemeName();
+  const theme = themes[settledThemeName];
   const navigationTheme = useMemo(() => buildNavigationTheme(theme), [theme]);
 
   useEffect(() => {

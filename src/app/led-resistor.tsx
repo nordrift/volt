@@ -137,7 +137,10 @@ export default function LedResistor() {
     >
       <Header title="LED resistor" onReset={handleReset} />
 
-      <Zone hairline="bottom">
+      <Zone
+        hairline="bottom"
+        style={result?.exceedsQuarterWatt ? undefined : styles.calculatedZone}
+      >
         <Text style={[styles.heading, { color: theme.textSecondary }]}>Calculated</Text>
 
         {errorMessage ? (
@@ -148,7 +151,7 @@ export default function LedResistor() {
               label="Resistance (R)"
               value={result ? formatResistance(result.resistanceOhms) : "—"}
               valid={!!result}
-              secondary={`nearest standard: ${result ? formatResistance(result.nextStandardValueOhms) : "—"}`}
+              secondary={`next standard value up: ${result ? formatResistance(result.nextStandardValueOhms) : "—"}`}
               theme={theme}
             />
             <OutputField
@@ -162,15 +165,10 @@ export default function LedResistor() {
       </Zone>
 
       {result?.exceedsQuarterWatt ? (
-        <Zone hairline="bottom">
+        <Zone hairline="bottom" style={styles.calculatedZone}>
           <WarningLine message="Exceeds ¼W — use a higher-rated resistor" />
         </Zone>
       ) : null}
-
-      {/* Absorbs the leftover space so Entered + Keypad still sit low, in
-          thumb reach, without the Calculated zone's own bordered box
-          stretching into a mostly-empty frame around short content. */}
-      <View style={styles.spacer} />
 
       <Zone hairline="bottom">
         <View style={styles.enteredRow}>
@@ -198,7 +196,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  spacer: {
+  calculatedZone: {
     flex: 1,
   },
   heading: {

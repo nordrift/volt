@@ -34,14 +34,14 @@ export function Header({ title, onReset, onBack }: HeaderProps) {
 
   return (
     <View style={[styles.container, { borderBottomColor: theme.hairline }]}>
-      <Pressable onPress={onBack ?? (() => router.back())} hitSlop={12} style={styles.side}>
+      <Pressable onPress={onBack ?? (() => router.back())} hitSlop={18} style={styles.side}>
         <BackArrow color={theme.textPrimary} />
       </Pressable>
       <Text style={[styles.title, { color: theme.textPrimary }]} numberOfLines={1}>
         {title}
       </Text>
       {onReset ? (
-        <Pressable onPress={onReset} hitSlop={12} style={styles.side}>
+        <Pressable onPress={onReset} hitSlop={17} style={styles.side}>
           <Text style={[styles.reset, { color: theme.textSecondary }]}>Reset</Text>
         </Pressable>
       ) : (
