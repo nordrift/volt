@@ -115,8 +115,9 @@ export const touch = {
 // DESIGN.md § Motion
 export const motion = {
   duration: 120,
-  /** DESIGN.md § Theme persistence — the toggle's crossfade, its own named exception. */
-  themeTransitionDuration: 200,
+  /** DESIGN.md § Theme persistence — the toggle's crossfade, its own named exception.
+   * TEMP: slowed 200 → 800 for on-device motion diagnosis. Revert before shipping. */
+  themeTransitionDuration: 800,
 } as const;
 
 export const fontFamilies = {
