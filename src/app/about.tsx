@@ -1,9 +1,21 @@
 import Constants from "expo-constants";
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import { Header } from "@/components/Header";
 import { screenPadding, spacing, type, useTheme, type ThemeColors } from "@/theme";
+
+// Sized to sit at roughly the same visual weight as the eyebrow line it
+// replaces (a single 16dp text row) — wide enough to read as a proper
+// lockup, not so wide it dominates the footer. Width drives the box and
+// aspectRatio derives height — both source PNGs are 218×82 (measured),
+// so they share one ratio.
+const BRAND_LOCKUP_WIDTH = 110;
+const BRAND_LOCKUP_ASPECT_RATIO = 218 / 82;
+const BRAND_LOCKUP_SOURCE = {
+  light: require("@/assets/images/about-page-logo-example-light.png"),
+  dark: require("@/assets/images/splash_branding_frost.png"),
+};
 
 function openUrl(url: string) {
   Linking.openURL(url).catch(() => {});
@@ -123,7 +135,11 @@ export default function About() {
         ))}
 
         <View style={styles.footer}>
-          <Text style={[styles.eyebrow, { color: theme.textSecondary }]}>BY NORDRIFT</Text>
+          <Image
+            source={BRAND_LOCKUP_SOURCE[theme.name]}
+            style={styles.brandLockup}
+            resizeMode="contain"
+          />
           <Text style={[styles.copyright, { color: theme.textTertiary }]}>© 2026 Nordrift</Text>
         </View>
       </ScrollView>
@@ -187,14 +203,14 @@ const styles = StyleSheet.create({
     lineHeight: type.toolName.lineHeight,
   },
   footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: screenPadding,
-    gap: spacing.xs,
   },
-  eyebrow: {
-    fontFamily: type.eyebrow.fontFamily,
-    fontSize: type.eyebrow.fontSize,
-    lineHeight: type.eyebrow.lineHeight,
-    letterSpacing: type.eyebrow.letterSpacing,
+  brandLockup: {
+    width: BRAND_LOCKUP_WIDTH,
+    aspectRatio: BRAND_LOCKUP_ASPECT_RATIO,
   },
   copyright: {
     fontFamily: type.caption.fontFamily,
