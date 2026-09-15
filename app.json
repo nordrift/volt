@@ -10,7 +10,7 @@
     "icon": "./assets/images/icon.png",
     "android": {
       "package": "dev.nordrift.volt",
-      "versionCode": 3,
+      "versionCode": 4,
       "permissions": [],
       "blockedPermissions": [
         "android.permission.INTERNET",
