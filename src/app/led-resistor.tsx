@@ -32,11 +32,11 @@ function trimNumber(value: number): string {
 
 function formatWatts(watts: number): string {
   if (watts === 0) {
-    return "0";
+    return "0 W";
   }
   const abs = Math.abs(watts);
   const decimals = abs >= 100 ? 1 : abs >= 1 ? 3 : 6;
-  return watts.toFixed(decimals).replace(/\.?0+$/, "");
+  return `${watts.toFixed(decimals).replace(/\.?0+$/, "")} W`;
 }
 
 function parseNumber(raw: string): number | undefined {
