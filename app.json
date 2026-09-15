@@ -2,6 +2,7 @@
   "expo": {
     "name": "Volt",
     "slug": "volt",
+    "owner": "nordrift",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "volt",
@@ -13,9 +14,8 @@
       "permissions": [],
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
-        "backgroundColor": "#0E1216",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#3C3A63",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
       }
     },
     "plugins": [
@@ -23,20 +23,27 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash_icon_cream.png",
+          "image": "./assets/images/splash-icon.png",
           "backgroundColor": "#3C3A63",
           "dark": {
-            "image": "./assets/images/splash_icon_frost.png",
+            "image": "./assets/images/splash-icon.png",
             "backgroundColor": "#000000"
           },
           "imageWidth": 200,
           "resizeMode": "contain"
         }
-      ]
+      ],
+      "./plugins/withSplashBranding.js"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "acd925f4-adc4-4606-8d72-717058101555"
+      }
     }
   }
 }

@@ -13,8 +13,8 @@ import { screenPadding, spacing, type, useTheme, type ThemeColors } from "@/them
 const BRAND_LOCKUP_WIDTH = 110;
 const BRAND_LOCKUP_ASPECT_RATIO = 218 / 82;
 const BRAND_LOCKUP_SOURCE = {
-  light: require("@/assets/images/about-page-logo-example-light.png"),
-  dark: require("@/assets/images/splash_branding_frost.png"),
+  light: require("@/assets/images/splash_branding-light.png"),
+  dark: require("@/assets/images/splash_branding.png"),
 };
 
 function openUrl(url: string) {

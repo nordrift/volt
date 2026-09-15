@@ -10,10 +10,11 @@ export type CrossfadeIconProps = {
 };
 
 /**
- * Crossfades between two renders of an icon (e.g. the same glyph in two
- * theme colours, or the toggle's sun/moon swap) by fading one opaque vector
- * out under the other fading in — simpler and more consistent than animating
- * `stroke`/`fill` on every underlying SVG primitive individually.
+ * Crossfades between two renders of the same glyph (e.g. a tool icon in two
+ * theme colours) by fading one opaque vector out under the other fading in —
+ * simpler and more consistent than animating `stroke`/`fill` on every
+ * underlying SVG primitive individually. For two different glyphs trading
+ * places, see HomeHeader's ToggleIconSlide instead.
  */
 export function CrossfadeIcon({ progress, size, renderFrom, renderTo }: CrossfadeIconProps) {
   const fromStyle = useAnimatedStyle(() => ({

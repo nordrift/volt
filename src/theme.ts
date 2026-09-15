@@ -85,6 +85,29 @@ const light: ThemeColors = {
 
 export const themes: Record<ThemeName, ThemeColors> = { light, dark };
 
+// The launch-moment hero surface — indigo/black regardless of the light/dark
+// app theme, so it's kept separate from ThemeColors rather than reused from
+// it. Must mirror the "expo-splash-screen" plugin config in app.json exactly
+// (background + image): SplashOverlay hands off from the native splash the
+// instant it mounts, and any mismatch there shows as a flash.
+// icon and wordmark are the same file for both themes — only the
+// background flips, same as app.json's plugin config.
+const SPLASH_ICON = require("@/assets/images/splash-icon.png");
+const SPLASH_WORDMARK = require("@/assets/images/splash_branding.png");
+
+export const splash: Record<ThemeName, { background: string; icon: number; wordmark: number }> = {
+  light: {
+    background: "#3c3a63", // accent-indigo — app.json plugin.image background
+    icon: SPLASH_ICON,
+    wordmark: SPLASH_WORDMARK,
+  },
+  dark: {
+    background: "#000000", // app.json plugin.dark.backgroundColor
+    icon: SPLASH_ICON,
+    wordmark: SPLASH_WORDMARK,
+  },
+};
+
 // DESIGN.md § Spacing
 export const spacing = {
   xs: 4,

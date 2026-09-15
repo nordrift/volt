@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 import { useEffect, useMemo, useState } from "react";
 import { useColorScheme } from "react-native";
+import { SplashOverlay } from "@/components/SplashOverlay";
 import { loadInitialTheme, motion, themes, useSettledThemeName, type ThemeColors } from "@/theme";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -30,14 +31,17 @@ export default function RootLayout() {
 
   const ready = fontsLoaded && themeReady;
 
+  // Fires once, right after this component's first paint — not gated on
+  // `ready`. SplashOverlay below is pixel-identical to the native splash
+  // (same background + icon, per app.json) up to this instant, so hiding
+  // the native one the moment it lands hands off with nothing showing
+  // through: it just reveals the wordmark the native splash couldn't.
   useEffect(() => {
-    if (ready) {
-      SplashScreen.hideAsync().catch(() => {});
-    }
-  }, [ready]);
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
 
   if (!ready) {
-    return null;
+    return <SplashOverlay scheme={systemScheme === "dark" ? "dark" : "light"} />;
   }
 
   return <RootLayoutNav />;
