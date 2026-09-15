@@ -35,13 +35,13 @@ const SOURCE_IMAGES = {
   dark: path.join("assets", "images", "splash_branding.png"),
 };
 
-// Android's hard cap for windowSplashScreenBrandingImage is 80dp tall.
-// Height drives the box per density bucket; width follows the source's own
-// aspect ratio so nothing stretches. Real per-bucket resizing (not one image
-// reused everywhere) so the mark comes out the same physical size on every
-// device instead of shrinking on denser screens — see the note at the call
-// site for why that matters.
-const MAX_HEIGHT_DP = 80;
+// Target on-screen height. Android's hard cap for windowSplashScreenBrandingImage
+// is 80dp tall; 40 renders at half that. Height drives the box per density
+// bucket; width follows the source's own aspect ratio so nothing stretches.
+// Real per-bucket resizing (not one image reused everywhere) so the mark
+// comes out the same physical size on every device instead of shrinking on
+// denser screens — see the note at the call site for why that matters.
+const MAX_HEIGHT_DP = 40;
 const SOURCE_ASPECT_RATIO = 218 / 82;
 const DENSITY_MULTIPLIERS = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 };
 
