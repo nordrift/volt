@@ -10,7 +10,7 @@
     "icon": "./assets/images/icon.png",
     "android": {
       "package": "dev.nordrift.volt",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": [],
       "blockedPermissions": [
         "android.permission.INTERNET",
@@ -30,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash-icon-light.png",
           "backgroundColor": "#3C3A63",
           "dark": {
             "image": "./assets/images/splash-icon.png",
@@ -40,7 +40,8 @@
           "resizeMode": "contain"
         }
       ],
-      "./plugins/withSplashBranding.js"
+      "./plugins/withSplashBranding.js",
+      "./plugins/withReleaseMinification.js"
     ],
     "experiments": {
       "typedRoutes": true,

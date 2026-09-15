@@ -27,22 +27,25 @@ const STYLE_NAME = "Theme.App.SplashScreen";
 const STYLE_PARENT = "Theme.SplashScreen";
 const BRANDING_DRAWABLE_NAME = "splash_branding";
 
-// Same source file for both themes — the drawable-night-* copies are
-// regenerated from it too, purely so a future re-export that does diverge
-// per theme only has to change this constant.
+// Separate light/dark source art — drawable-night-* copies are regenerated
+// from the dark file, drawable-* from the light one, so each follows the
+// system theme the same way the native splash's background colour does.
 const SOURCE_IMAGES = {
-  light: path.join("assets", "images", "splash_branding.png"),
-  dark: path.join("assets", "images", "splash_branding.png"),
+  light: path.join("assets", "images", "splash-branding-light.png"),
+  dark: path.join("assets", "images", "splash-branding.png"),
 };
 
 // Target on-screen height. Android's hard cap for windowSplashScreenBrandingImage
-// is 80dp tall; 40 renders at half that. Height drives the box per density
-// bucket; width follows the source's own aspect ratio so nothing stretches.
-// Real per-bucket resizing (not one image reused everywhere) so the mark
-// comes out the same physical size on every device instead of shrinking on
-// denser screens — see the note at the call site for why that matters.
-const MAX_HEIGHT_DP = 40;
-const SOURCE_ASPECT_RATIO = 218 / 82;
+// is 80dp tall, so this renders at the cap. Height drives the box per
+// density bucket; width follows the source's own aspect ratio so nothing
+// stretches. Real per-bucket resizing (not one image reused everywhere) so
+// the mark comes out the same physical size on every device instead of
+// shrinking on denser screens — see the note at the call site for why that
+// matters.
+const MAX_HEIGHT_DP = 80;
+// Matches splash-branding.png's actual 850×320 — both light and dark source
+// files share this ratio.
+const SOURCE_ASPECT_RATIO = 850 / 320;
 const DENSITY_MULTIPLIERS = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 };
 
 function themesV31Xml() {
