@@ -100,7 +100,7 @@ Every calculation is an exported pure function in `src/lib` that takes numbers a
 R2 = R1 × ratio / (1 − ratio),   ratio = Vout / Vin
 ```
 
-That ideal R2 is snapped to the nearest standard value and the pair is ranked by output error. This makes the search linear in the number of standard values rather than quadratic. The screen runs it over E12, E24 and E96, merges the results so that each pair keeps its easiest-to-source series label, and shows the ten best.
+That ideal R2 is snapped to the nearest standard value and the pair is ranked by output error. This evaluates n candidate pairs instead of all n² combinations. Each nearest-value lookup is currently a linear scan; at most a few hundred values per series, that is effectively instant, and a binary search would be the obvious optimisation if the range grew. The screen runs it over E12, E24 and E96, merges the results so that each pair keeps its easiest-to-source series label, and shows the ten best.
 
 **LED series resistor (`calculateLedSeriesResistor`).** Computes R = (Vs − Vf) / If and P = (Vs − Vf) × If, rounds up to the next standard value, and flags dissipation above ¼ W. Vs = Vf is rejected rather than returning R = 0, since there is no headroom for a resistor to do anything.
 
