@@ -1,7 +1,7 @@
 # DESIGN.md — Volt
 
-Volt's product-surface design file. It **inherits from** `../../brand/DESIGN.md`
-(the Nordrift system) and overrides nothing in it without a written reason.
+Volt's product-surface design file. It **inherits from** the Nordrift brand system
+(maintained separately) and overrides nothing in it without a written reason.
 
 The parent file is a marketing-and-web spec and says so in its own Known Gaps:
 numeric inputs, live-updating result rows, stack navigation and one-handed touch

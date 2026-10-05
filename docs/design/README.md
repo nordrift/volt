@@ -1,9 +1,9 @@
 # Design references
 
-Source mockups for the home screen, approved [date you're pasting this].
+Source mockups for the home screen, approved before the build started.
 
-- `Volt_Home-selection-light.png` — light theme, default
-- `Volt_Home-selection-dark.png` — dark theme, same tokens with swapped values
+- `home-mockup-light.png` — light theme, default
+- `home-mockup-dark.png` — dark theme, same tokens with swapped values
 
 ## Locked decisions
 

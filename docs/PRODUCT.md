@@ -1,6 +1,6 @@
 # Volt — Product Specification
 
-**Status:** v1 specification, in build
+**Status:** v1 complete, in Google Play review
 **Owner:** Nordrift
 **Package ID:** `dev.nordrift.volt` (permanent once published)
 **Platform:** Android first, via React Native + Expo (SDK 57)
@@ -201,13 +201,13 @@ answers.
 | Keypad | Hand-built, no dependency | Twelve keys and a press state. Nothing to install |
 | Testing | Jest on calculation functions only | Logic is testable and worth testing. Screens are not, at this stage |
 
-**Architecture rule:** every calculation lives in a pure function in `src/lib`, separate from any component. Screens call them. This makes the logic testable and makes the code legible to an interviewer.
+**Architecture rule:** every calculation lives in a pure function in `src/lib`, separate from any component. Screens call them. This keeps the logic testable in isolation and the screens thin.
 
 ---
 
 ## Design
 
-Volt inherits the Nordrift system at `../../brand/DESIGN.md` and adds only what
+Volt inherits the Nordrift brand system (maintained separately) and adds only what
 that file's own Known Gaps say it doesn't cover: numeric inputs, live-updating
 results, stack navigation, one-handed touch targets. Those live in Volt's
 `DESIGN.md`.
@@ -238,8 +238,10 @@ The short version:
 
 ## Build order
 
-1. ~~Project scaffold, TypeScript, Expo Router, running on a real device~~ **done**
-2. ~~`DESIGN.md` settled~~ **done** — core screens designed
+The order v1 was built in, kept as a record.
+
+1. Project scaffold, TypeScript, Expo Router, running on a real device
+2. `DESIGN.md` settled
 3. `src/theme.ts` from the design tokens, Inter and JetBrains Mono loading
 4. Shared components — screen shell, zone, input well, keypad, warning line
 5. Home screen with navigation to five empty screens

@@ -51,8 +51,8 @@ function BackspaceIcon({ color }: { color: string }) {
   );
 }
 
-// DESIGN.md § Components — Keypad. Replaces the system keyboard entirely —
-// see CLAUDE.md's "keypad is hand-built and permanent" constraint.
+// DESIGN.md § Components — Keypad. Replaces the system keyboard entirely so
+// the layout never shifts and every key is thumb-sized (docs/PRODUCT.md § Input).
 export function Keypad({ onDigit, onDecimal, onBackspace }: KeypadProps) {
   const theme = useTheme();
 

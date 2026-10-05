@@ -171,7 +171,7 @@ export const type = {
 
 // --- Theme store -----------------------------------------------------------
 // DESIGN.md § Theme persistence. A module-level store, not Context/Redux/
-// Zustand (see CLAUDE.md § State) — theme is the one piece of state every
+// Zustand (docs/PRODUCT.md § Technical decisions) — theme is the one piece of state every
 // screen needs without prop-drilling through the stack.
 
 const STORAGE_KEY = "volt.theme";
