@@ -98,6 +98,10 @@ npm run lint
 
 Release builds use [EAS Build](https://docs.expo.dev/build/introduction/) with the profiles in `eas.json`.
 
+## How it was built
+
+Built with AI as a coding assistant. I wrote the product and design specs, made the architecture and scope decisions, and reviewed and tested every change. The calculation layer was written test-first against values I checked by hand, before any screen existed. The [technical report](docs/REPORT.md) walks through the reasoning behind each part.
+
 ## Documentation
 
 - [Technical report](docs/REPORT.md): problem, design, implementation, testing and results
