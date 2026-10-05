@@ -112,7 +112,8 @@ The theme is the only state every screen needs. Instead of React Context or a st
 
 Two visual bugs came out of this during development and were fixed:
 
-- **White flash when navigating in dark mode.** The native root view behind the navigation stack stayed white and showed through during transitions. The root layout now sets the native background colour with `expo-system-ui` whenever the theme changes.
+- **White flash when navigating in dark mode.** Expo Router mounts React Navigation's container, which falls back to React Navigation's default light theme when none is given. Its white background is what the native screen stack paints between screens during a transition. The root layout now builds the navigation theme from Volt's own tokens.
+- **One-frame flash when toggling the theme on Android.** Native backgrounds (the stack surface, and the root view set through `expo-system-ui`) switched the instant the toggle was pressed, while the visible content was still mid-crossfade. A `useSettledThemeName` hook holds those layers on the old colour until the 200 ms crossfade finishes.
 - **Status bar ignoring the in-app toggle.** With no `StatusBar` component, the system bar followed the device's colour scheme rather than Volt's. It is now set explicitly from the active theme.
 
 ### 5.4 Android build
