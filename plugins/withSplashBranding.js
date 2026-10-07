@@ -35,19 +35,22 @@ const BRANDING_DRAWABLE_NAME = "splash_branding";
 // name, so a night pass here would emit byte-identical copies for nothing.
 const SOURCE_IMAGE = path.join("assets", "images", "splash-branding.png");
 
-// Target on-screen height. Android's cap for windowSplashScreenBrandingImage
-// is 80dp, but the wordmark is 8.25:1 — at 80dp tall it would render 660dp
-// wide, far past any phone. 14dp gives ~115dp wide, which sits below the
-// Volt lockup in the icon slot the way ANTHROP\C sits below Claude's: clearly
-// subordinate. SplashOverlay's WORDMARK_WIDTH mirrors that 115 so the JS
-// layer hands off from the native splash without the mark changing size.
-// Height drives the box per density bucket; width follows the source's own
-// aspect ratio so nothing stretches. Real per-bucket resizing (not one image
-// reused everywhere) so the mark comes out the same physical size on every
-// device instead of shrinking on denser screens.
-const MAX_HEIGHT_DP = 14;
-// Matches splash-branding.png's actual 800×97 (measured).
-const SOURCE_ASPECT_RATIO = 800 / 97;
+// Android 12+ does not draw windowSplashScreenBrandingImage at the drawable's
+// own size: it sets it as the *background* of a fixed 200×80dp view pinned
+// 60dp above the bottom edge, so whatever is supplied gets stretched to fill
+// exactly 200×80 (measured on device — a tight 8.25:1 wordmark supplied at
+// 115×14dp rendered at 200×79dp, stretched 5.7× vertically). The source art
+// is therefore a 2.5:1 canvas with the wordmark already padded into its
+// centre, and each density bucket is generated at exactly 200×80dp so the
+// stretch is 1:1. The wordmark then appears at 100×12.5dp. SplashOverlay
+// mirrors the same box and position for the JS handoff.
+// Real per-bucket resizing (not one image reused everywhere) so the mark
+// comes out the same physical size on every device instead of shrinking on
+// denser screens.
+const MAX_HEIGHT_DP = 80;
+// Matches splash-branding.png's actual 800×320 (measured) — exactly the box's
+// 200:80, so width comes out at exactly 200dp too.
+const SOURCE_ASPECT_RATIO = 800 / 320;
 const DENSITY_MULTIPLIERS = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 };
 
 function themesV31Xml() {
