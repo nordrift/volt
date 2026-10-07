@@ -2,22 +2,26 @@ import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { spacing, splash, type ThemeName } from "@/theme";
 
-// The 200×200 native splash image size from app.json's expo-splash-screen
+// The 288×288 native splash image size from app.json's expo-splash-screen
 // plugin config, mirrored here so the icon doesn't resize the instant this
-// JS layer takes over from the native splash.
-const ICON_WIDTH = 200;
+// JS layer takes over from the native splash. splash-icon.png is a square
+// canvas holding the Volt lockup at 63% of its width, so 288 renders the
+// lockup itself at ~182dp — the largest a 3:1 shape can be and still clear
+// Android 12's circular icon mask.
+const ICON_WIDTH = 288;
 
-// Matches the width the same wordmark lockup renders at on the About screen
-// footer — one size for this asset family across the app.
-const WORDMARK_WIDTH = 110;
-const WORDMARK_ASPECT_RATIO = 218 / 82;
+// Mirrors withSplashBranding.js's MAX_HEIGHT_DP of 14 at the wordmark's
+// 8.25:1 ratio, so the mark is the same size before and after the handoff.
+const WORDMARK_WIDTH = 115;
+const WORDMARK_ASPECT_RATIO = 800 / 97;
 
 /**
- * Stands in for the native splash screen after it hides, adding the
- * "Volt / BY NORDRIFT" wordmark the native config can't show (it only
- * supports one centered image). Pinned near the bottom, the way Instagram
- * shows a small "from Meta" mark under its own logo — see _layout.tsx for
- * the handoff timing.
+ * Stands in for the native splash screen after it hides. The centred image is
+ * the Volt lockup (bolt + name); the NORDRIFT wordmark pinned near the bottom
+ * is the parent-brand credit, the way Claude's splash puts ANTHROP\C under its
+ * own lockup. The native splash can show both too (icon slot + API 31 branding
+ * image), which is what withSplashBranding.js wires up — this layer exists so
+ * the two are pixel-identical across the handoff. See _layout.tsx for timing.
  */
 export function SplashOverlay({ scheme }: { scheme: ThemeName }) {
   const s = splash[scheme];

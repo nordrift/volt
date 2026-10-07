@@ -90,23 +90,23 @@ export const themes: Record<ThemeName, ThemeColors> = { light, dark };
 // it. Must mirror the "expo-splash-screen" plugin config in app.json exactly
 // (background + image): SplashOverlay hands off from the native splash the
 // instant it mounts, and any mismatch there shows as a flash.
-// icon and wordmark each have their own light/dark file, same as app.json's
-// plugin config.
-const SPLASH_ICON_LIGHT = require("@/assets/images/splash-icon-light.png");
-const SPLASH_ICON_DARK = require("@/assets/images/splash-icon.png");
-const SPLASH_WORDMARK_LIGHT = require("@/assets/images/splash-branding-light.png");
-const SPLASH_WORDMARK_DARK = require("@/assets/images/splash-branding.png");
+// One cream icon and one cream wordmark serve both themes: cream reads
+// correctly on the light theme's indigo and the dark theme's black, so only
+// `background` below varies. Mirrors app.json, where plugin.image and
+// plugin.dark.image now point at this same file.
+const SPLASH_ICON = require("@/assets/images/splash-icon.png");
+const SPLASH_WORDMARK = require("@/assets/images/splash-branding.png");
 
 export const splash: Record<ThemeName, { background: string; icon: number; wordmark: number }> = {
   light: {
     background: "#3c3a63", // accent-indigo — app.json plugin.image background
-    icon: SPLASH_ICON_LIGHT,
-    wordmark: SPLASH_WORDMARK_LIGHT,
+    icon: SPLASH_ICON,
+    wordmark: SPLASH_WORDMARK,
   },
   dark: {
     background: "#000000", // app.json plugin.dark.backgroundColor
-    icon: SPLASH_ICON_DARK,
-    wordmark: SPLASH_WORDMARK_DARK,
+    icon: SPLASH_ICON,
+    wordmark: SPLASH_WORDMARK,
   },
 };
 

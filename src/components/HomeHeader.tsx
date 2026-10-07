@@ -1,10 +1,23 @@
 import { router } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import Animated, { interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { screenPadding, setThemeName, spacing, touch, type, type ThemeTransition } from "@/theme";
 
 const TOGGLE_ICON_SIZE = 18;
+
+// Replaces the plain "Volt" text title. 28dp tall against type.screenTitle's
+// 26px keeps the wordmark inside the lockup at the same optical size the text
+// was, with the bolt reading a touch taller — the lockup's own art has the
+// bolt spanning its full height and the letters 246/305 of it.
+const LOCKUP_HEIGHT = 28;
+const LOCKUP_ASPECT_RATIO = 918 / 305;
+// Pure black / pure white, matching the Nordrift wordmark files. The splash
+// pair is cream-on-indigo; in-app chrome is black-on-white and white-on-black.
+const LOCKUP_SOURCE = {
+  light: require("@/assets/images/volt-lockup-black.png"),
+  dark: require("@/assets/images/volt-lockup-white.png"),
+};
 
 function SunIcon({ color }: { color: string }) {
   return (
@@ -75,6 +88,47 @@ function ToggleIconSlide({ transition }: { transition: ThemeTransition }) {
   );
 }
 
+/**
+ * The header's text used interpolateColor to ride the 200ms theme crossfade.
+ * An Image can't interpolate its own pixels, so the two colourways are stacked
+ * and their opacity crossfaded instead — the same approach as CrossfadeIcon,
+ * which can't be reused here because it assumes a square box. At rest
+ * (progress 0 or 1) exactly one layer is opaque; mid-transition the pair
+ * composites to ~75%, which reads as the dissolve it is.
+ *
+ * Both layers are absoluteFill against the outer box's explicit height +
+ * aspectRatio. CrossfadeIcon leaves its "to" layer in flow because that layer
+ * sizes itself from an SVG with fixed dimensions; an Image at 100%/100% has
+ * no such size of its own, so in flow its height would only resolve through
+ * Yoga's handling of a percentage against an auto-height parent. progress
+ * rests at 1, so that's the layer visible at rest — it gets the explicit box.
+ *
+ * accessible groups the pair into one node: without it TalkBack can step into
+ * both Images separately, neither of which carries a label.
+ */
+function LockupCrossfade({ transition }: { transition: ThemeTransition }) {
+  const { progress, fromName, toName } = transition;
+
+  const fromStyle = useAnimatedStyle(() => ({ opacity: 1 - progress.value }));
+  const toStyle = useAnimatedStyle(() => ({ opacity: progress.value }));
+
+  return (
+    <Animated.View
+      style={styles.lockup}
+      accessible
+      accessibilityRole="header"
+      accessibilityLabel="Volt"
+    >
+      <Animated.View style={[StyleSheet.absoluteFill, fromStyle]}>
+        <Image source={LOCKUP_SOURCE[fromName]} style={styles.lockupImage} resizeMode="contain" />
+      </Animated.View>
+      <Animated.View style={[StyleSheet.absoluteFill, toStyle]}>
+        <Image source={LOCKUP_SOURCE[toName]} style={styles.lockupImage} resizeMode="contain" />
+      </Animated.View>
+    </Animated.View>
+  );
+}
+
 export type HomeHeaderProps = {
   transition: ThemeTransition;
 };
@@ -95,7 +149,7 @@ export function HomeHeader({ transition }: HomeHeaderProps) {
 
   return (
     <Animated.View style={[styles.container, borderStyle]}>
-      <Animated.Text style={[styles.title, textStyle]}>Volt</Animated.Text>
+      <LockupCrossfade transition={transition} />
       <View style={styles.actions}>
         <Pressable
           onPress={() => setThemeName(toName === "light" ? "dark" : "light")}
@@ -121,10 +175,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: screenPadding,
     borderBottomWidth: 1,
   },
-  title: {
-    fontFamily: type.screenTitle.fontFamily,
-    fontSize: type.screenTitle.fontSize,
-    lineHeight: type.screenTitle.lineHeight,
+  lockup: {
+    height: LOCKUP_HEIGHT,
+    aspectRatio: LOCKUP_ASPECT_RATIO,
+  },
+  lockupImage: {
+    width: "100%",
+    height: "100%",
   },
   actions: {
     flexDirection: "row",

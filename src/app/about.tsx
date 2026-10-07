@@ -5,16 +5,26 @@ import Svg, { Path } from "react-native-svg";
 import { Header } from "@/components/Header";
 import { screenPadding, spacing, type, useTheme, type ThemeColors } from "@/theme";
 
-// Sized to sit at roughly the same visual weight as the eyebrow line it
-// replaces (a single 16dp text row) — wide enough to read as a proper
-// lockup, not so wide it dominates the footer. Width drives the box and
-// aspectRatio derives height — both source PNGs are 218×82 (measured),
-// so they share one ratio.
+// Footer parent-brand credit: the NORDRIFT wordmark on its own, sat beside
+// the copyright line. Width drives the box and aspectRatio derives height —
+// both source PNGs are 800×97 (measured), so they share one ratio. At 110dp
+// wide that's ~13dp tall, deliberately no taller than the caption next to it.
 const BRAND_LOCKUP_WIDTH = 110;
-const BRAND_LOCKUP_ASPECT_RATIO = 218 / 82;
+const BRAND_LOCKUP_ASPECT_RATIO = 800 / 97;
 const BRAND_LOCKUP_SOURCE = {
-  light: require("@/assets/images/about-branding-light.png"),
-  dark: require("@/assets/images/about-branding.png"),
+  light: require("@/assets/images/nordrift-wordmark-black.png"),
+  dark: require("@/assets/images/nordrift-wordmark-white.png"),
+};
+
+// The app's own lockup, replacing the plain "Volt" text in the identity
+// block. 34dp tall against the 32dp lineHeight the text occupied keeps the
+// vertical rhythm of identity's gap stack intact while giving the title a
+// little more presence than the Home header's 28dp instance.
+const APP_LOCKUP_HEIGHT = 34;
+const APP_LOCKUP_ASPECT_RATIO = 918 / 305;
+const APP_LOCKUP_SOURCE = {
+  light: require("@/assets/images/volt-lockup-black.png"),
+  dark: require("@/assets/images/volt-lockup-white.png"),
 };
 
 function openUrl(url: string) {
@@ -103,7 +113,14 @@ export default function About() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.identity}>
-          <Text style={[styles.appName, { color: theme.textPrimary }]}>Volt</Text>
+          <Image
+            source={APP_LOCKUP_SOURCE[theme.name]}
+            style={styles.appLockup}
+            resizeMode="contain"
+            accessible
+            accessibilityRole="header"
+            accessibilityLabel="Volt"
+          />
           {version ? (
             <Text style={[styles.version, { color: theme.textSecondary }]}>Version {version}</Text>
           ) : null}
@@ -139,6 +156,8 @@ export default function About() {
             source={BRAND_LOCKUP_SOURCE[theme.name]}
             style={styles.brandLockup}
             resizeMode="contain"
+            accessible
+            accessibilityLabel="Nordrift"
           />
           <Text style={[styles.copyright, { color: theme.textTertiary }]}>© 2026 Nordrift</Text>
         </View>
@@ -159,10 +178,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: screenPadding,
     gap: spacing.sm,
   },
-  appName: {
-    fontFamily: type.screenTitle.fontFamily,
-    fontSize: type.screenTitle.fontSize,
-    lineHeight: type.screenTitle.lineHeight,
+  appLockup: {
+    height: APP_LOCKUP_HEIGHT,
+    aspectRatio: APP_LOCKUP_ASPECT_RATIO,
   },
   version: {
     fontFamily: type.label.fontFamily,

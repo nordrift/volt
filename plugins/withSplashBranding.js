@@ -27,25 +27,27 @@ const STYLE_NAME = "Theme.App.SplashScreen";
 const STYLE_PARENT = "Theme.SplashScreen";
 const BRANDING_DRAWABLE_NAME = "splash_branding";
 
-// Separate light/dark source art — drawable-night-* copies are regenerated
-// from the dark file, drawable-* from the light one, so each follows the
-// system theme the same way the native splash's background colour does.
-const SOURCE_IMAGES = {
-  light: path.join("assets", "images", "splash-branding-light.png"),
-  dark: path.join("assets", "images", "splash-branding.png"),
-};
+// One source file for both themes. The wordmark is cream (#FAF9F5), which
+// reads correctly on the light theme's indigo background and on the dark
+// theme's black, so there's no second piece of art to generate. Only the
+// unqualified drawable-* buckets are written: Android resource resolution
+// falls back to drawable-* when no drawable-night-* exists for the same
+// name, so a night pass here would emit byte-identical copies for nothing.
+const SOURCE_IMAGE = path.join("assets", "images", "splash-branding.png");
 
-// Target on-screen height. Android's hard cap for windowSplashScreenBrandingImage
-// is 80dp tall, so this renders at the cap. Height drives the box per
-// density bucket; width follows the source's own aspect ratio so nothing
-// stretches. Real per-bucket resizing (not one image reused everywhere) so
-// the mark comes out the same physical size on every device instead of
-// shrinking on denser screens — see the note at the call site for why that
-// matters.
-const MAX_HEIGHT_DP = 80;
-// Matches splash-branding.png's actual 850×320 — both light and dark source
-// files share this ratio.
-const SOURCE_ASPECT_RATIO = 850 / 320;
+// Target on-screen height. Android's cap for windowSplashScreenBrandingImage
+// is 80dp, but the wordmark is 8.25:1 — at 80dp tall it would render 660dp
+// wide, far past any phone. 14dp gives ~115dp wide, which sits below the
+// Volt lockup in the icon slot the way ANTHROP\C sits below Claude's: clearly
+// subordinate. SplashOverlay's WORDMARK_WIDTH mirrors that 115 so the JS
+// layer hands off from the native splash without the mark changing size.
+// Height drives the box per density bucket; width follows the source's own
+// aspect ratio so nothing stretches. Real per-bucket resizing (not one image
+// reused everywhere) so the mark comes out the same physical size on every
+// device instead of shrinking on denser screens.
+const MAX_HEIGHT_DP = 14;
+// Matches splash-branding.png's actual 800×97 (measured).
+const SOURCE_ASPECT_RATIO = 800 / 97;
 const DENSITY_MULTIPLIERS = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 };
 
 function themesV31Xml() {
@@ -93,14 +95,8 @@ function withSplashBranding(config) {
       await writeDensityCopies({
         projectRoot,
         resDir,
-        srcRelativePath: SOURCE_IMAGES.light,
+        srcRelativePath: SOURCE_IMAGE,
         folderPrefix: "drawable",
-      });
-      await writeDensityCopies({
-        projectRoot,
-        resDir,
-        srcRelativePath: SOURCE_IMAGES.dark,
-        folderPrefix: "drawable-night",
       });
 
       const v31Dir = path.join(resDir, "values-v31");
