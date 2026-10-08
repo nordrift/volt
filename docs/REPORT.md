@@ -148,8 +148,8 @@ npm test
 
 - Package ID `dev.nordrift.volt`, built as an Android App Bundle with EAS Build.
 - No permissions and no data collection, so the Play Data Safety form is all "no".
-- Store listing assets are in [`store/`](../store).
-- Status: submitted to Google Play and in review.
+- Store listing assets (feature graphic, phone and tablet screenshots) are in [`store/`](../store).
+- Status: published on Google Play.
 
 ## 8. Limitations and future work
 

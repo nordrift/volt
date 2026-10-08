@@ -1,6 +1,6 @@
 # Volt — Product Specification
 
-**Status:** v1 complete, in Google Play review
+**Status:** v1 published on Google Play
 **Owner:** Nordrift
 **Package ID:** `dev.nordrift.volt` (permanent once published)
 **Platform:** Android first, via React Native + Expo (SDK 57)
