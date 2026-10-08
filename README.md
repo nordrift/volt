@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="store/feature-graphic.png" alt="Volt, offline electronics calculator" width="720">
+  <img src="store/feature-graphic.png" alt="Volt, the offline calculator for electronics bench work" width="720">
 </p>
 
 <p align="center">
@@ -15,22 +15,24 @@
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-3C3A63">
 </p>
 
-<p align="center"><strong>Google Play:</strong> in review. Link coming soon.</p>
+<p align="center">
+  <a href="#"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width="220"></a>
+</p>
 
 ---
 
 <table>
   <tr>
-    <td><img src="store/screenshots/07-volt-home-light.png" alt="Home screen, light theme" width="200"></td>
-    <td><img src="store/screenshots/02-resistor-colour-code.png" alt="Resistor colour code" width="200"></td>
-    <td><img src="store/screenshots/03-ohms-law.png" alt="Ohm's law" width="200"></td>
-    <td><img src="store/screenshots/04-voltage-divider.png" alt="Voltage divider" width="200"></td>
+    <td><img src="store/screenshots/phone/01-home-dark.png" alt="Home screen, dark theme: five bench tools, one tap away" width="200"></td>
+    <td><img src="store/screenshots/phone/02-resistor-colour-code.png" alt="Resistor colour code: decode or encode 4, 5 and 6-band resistors" width="200"></td>
+    <td><img src="store/screenshots/phone/03-led-resistor.png" alt="LED series resistor: resistance, power and the next standard value up" width="200"></td>
+    <td><img src="store/screenshots/phone/04-voltage-divider.png" alt="Voltage divider, forward and reverse" width="200"></td>
   </tr>
   <tr>
-    <td><img src="store/screenshots/01-volt-home-dark.png" alt="Home screen, dark theme" width="200"></td>
-    <td><img src="store/screenshots/05-led-resistor.png" alt="LED series resistor" width="200"></td>
-    <td><img src="store/screenshots/06-e-series-lookup.png" alt="E-series lookup" width="200"></td>
-    <td></td>
+    <td><img src="store/screenshots/phone/05-ohms-law.png" alt="Ohm's law, solved live" width="200"></td>
+    <td><img src="store/screenshots/phone/06-e-series-lookup.png" alt="E-series lookup: nearest E12, E24 and E96 values" width="200"></td>
+    <td><img src="store/screenshots/phone/07-home-light.png" alt="Home screen, light theme" width="200"></td>
+    <td><img src="store/screenshots/phone/08-splash.png" alt="Splash screen, built by Nordrift" width="200"></td>
   </tr>
 </table>
 
@@ -68,7 +70,7 @@ src/
   theme.ts      design tokens and the theme store
 plugins/        Expo config plugins for the Android 12+ splash and R8 minification
 docs/           product spec, design spec and technical report
-store/          Google Play listing assets
+store/          Google Play listing assets: feature graphic, phone and tablet screenshots
 ```
 
 Every calculation lives in `src/lib` as a pure, exported function with no React dependency. Screens only collect input and render results. This keeps the maths testable in isolation and the screens thin.
@@ -111,6 +113,12 @@ Built with AI as a coding assistant. I wrote the product and design specs, made 
 ## Roadmap
 
 Planned for v2, in order: pinout reference (ESP32, Arduino, Raspberry Pi GPIO), SMD resistor and capacitor codes, series/parallel combinations, RC filter cutoff, battery life estimator, PCB trace width.
+
+## Links
+
+- [Volt on Google Play](#)
+- [Volt on nordrift.dev](https://nordrift.dev/products/volt/)
+- [Support](https://nordrift.dev/support/volt/) · [Privacy policy](https://nordrift.dev/privacy/) · [Terms of use](https://nordrift.dev/terms/)
 
 ## License
 

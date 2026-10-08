@@ -95,7 +95,7 @@ a second theme instead of a second dark step:
 | `surface-tan-light` | `#c9976a` | The resistor body in the colour-code illustration (designed, not sampled — deeper than the dark `surface-tan` so it still reads against white) |
 
 Every value above except the three marked "designed, not sampled" was read
-directly off `design/Volt Home-selection-light.png` with a colour picker —
+directly off [`design/home-mockup-light.png`](design/home-mockup-light.png) with a colour picker —
 not eyeballed. The three unsampled ones cover UI that doesn't appear on the
 Home screen (input wells, warning state) and should be re-checked once a
 mockup for a tool screen exists.
